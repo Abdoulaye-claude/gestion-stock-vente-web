@@ -29,10 +29,66 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>mobile</title>
+  <title>Gestion Stock &amp; Vente</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    #chargement {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #EFF6F4;
+      color: #0F7A68;
+      text-align: center;
+      padding: 24px;
+    }
+    #chargement .spinner {
+      width: 36px;
+      height: 36px;
+      border: 4px solid rgba(15, 122, 104, 0.2);
+      border-top-color: #0F7A68;
+      border-radius: 50%;
+      animation: tourner 0.8s linear infinite;
+    }
+    #chargement.erreur {
+      color: #B3261E;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 13px;
+    }
+    #chargement.erreur .spinner { display: none; }
+    @keyframes tourner {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
+  <div id="chargement">
+    <div class="spinner"></div>
+    <div id="chargement-texte">Chargement de l'application…</div>
+  </div>
+  <script>
+    // Sans ce filet, une erreur pendant le démarrage du moteur Flutter (sur
+    // certains navigateurs mobiles) laisse juste une page blanche, sans
+    // aucun indice pour diagnostiquer à distance.
+    function afficherErreurDemarrage(message) {
+      var conteneur = document.getElementById('chargement');
+      var texte = document.getElementById('chargement-texte');
+      if (!conteneur || !texte) return;
+      conteneur.classList.add('erreur');
+      texte.textContent = "Le démarrage a échoué :\n" + message;
+    }
+    window.addEventListener('error', function (event) {
+      afficherErreurDemarrage(event.message || String(event.error));
+    });
+    window.addEventListener('unhandledrejection', function (event) {
+      afficherErreurDemarrage(String(event.reason));
+    });
+  </script>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
